@@ -6,7 +6,6 @@
 //John Parkhurst
 //10/7/21
 
-
 FILE *openF(char* arr){
     //@param: pointer to char array
     //Opens the file
