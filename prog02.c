@@ -54,6 +54,24 @@ int *calcDimen(FILE *fil){
     sscanf(list,"%d%c%d",&num[0],&trash,&num[1]);
     return num;
 }
+void findBloc(char* img,int* dimenI,int xInd){
+    /*@Param: pointer to char array of img, pointer to int array, the xindex of block(add y index)
+      @return: char array of "block"
+    */
+    int yPos=0;
+    //ypos is the 1,2,3 of the specific 3 block
+    //xInd is the left most x index never xInd>width-3
+    for(int i = 0; i<3;i++){
+        for(int k = num; k<num+3;k++){
+            printf("%c",img[yPos+k]);
+        }
+        printf("\n");
+        yPos+=dimenI[0];
+    }
+    printf("The End of this block\n");
+    
+    return;
+}
 void process(char* pat,char* img, int* dimenP, int* dimenI){
     //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
     // Meat
@@ -61,35 +79,11 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
     //0 is width 1 is height
     int patS = dimenP[0]*dimenP[1];
     int imageS = dimenI[0]*dimenI[1];
-    int tempX=0;
+    int tempX=2;
     int tempY=0;
     //printf("%s\n",img);
     //char* tempStr = (char*) calloc(100, sizeof(char));
-    //Math on this is so fucked
-    int a=0;
-    //We can get the top third corner
-    //now need to increment every single 3
-    for(int i = 0; i<3+a;i++){
-        for(int k = 0; k<3;k++){
-            printf("%c",img[tempX+k]);
-        }
-        printf("\n");
-        tempX+=dimenI[0];
-    }
-    printf("The End\n");
-    
-    /*
-    if(a!=0){
-            if(i==a+3 && a <=dimenI[1]){
-            a+=3;
-            }
-        }else{
-            if(i==a+2 && a <=dimenI[1]){
-            a+=3;
-            }
-        }
-    */
-
+    findBloc(img,dimenI,tempX);
     //printf("%d and %d\n",dimenP[0],dimenP[1]);
     //free(tempStr);
     return;
@@ -147,6 +141,7 @@ int main(int argc, char const *argv[])
         imgArr= readF(tempF);        
         //HERE WE EXECUTE pattern vs image checks
         strcpy(newdir,imageP);
+        //Create struct of image pass that
         process(pArr,imgArr,dimenP,dimenI);
         free(imgArr);
         free(dimenI);
