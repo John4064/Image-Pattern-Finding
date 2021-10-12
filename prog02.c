@@ -22,16 +22,12 @@ FILE *openF(char* arr){
         return fptr;
     }
 }
-
 char *readF(FILE *fptr){
     char* arr = (char*) calloc(100, sizeof(char));
     char c;
     printf("%c",c);
     int count=0;
     //first line is special
-    char num[10];
-    fgets(num,60,fptr);
-    printf("%s",num);
     while(1){
         c=fgetc(fptr);
         if(c==EOF){
@@ -45,12 +41,31 @@ char *readF(FILE *fptr){
     }
     return arr;
 }
-
+int *calcDimen(FILE *fil){
+    // calculates dimension of file
+    //@Param: Takes a ptr to a file(pattern of image)
+    //return: integer array of height/width
+    int* num = (int*) calloc(3, sizeof(int));
+    char list[10];
+    char trash;
+    fgets(list,60,fil);
+    sscanf(list,"%d%c%d",&num[0],&trash,&num[1]);
+    return num;
+}
+void process(char* pat,char* img, int* dimenP, int* dimenI){
+    for(int i = 0; i <strlen(img);i++){
+        printf("a");
+    }
+    return;
+}
 int main(int argc, char const *argv[])
 {
-    int width,height;
+    //Pattern Dimensions
+    int widthP=0;
+    int heightP=0;
     //image path
     const char *imageP = argv[2];
+
     char* val = (char*) calloc(100, sizeof(char));
     //Importing image path from script
     //Argv1 is the pattern
@@ -62,13 +77,16 @@ int main(int argc, char const *argv[])
     //Opening pattern Files, Reading File, Putting into array
     FILE *fil;
     fil=openF(val);
-    char* fArr = (char*) calloc((3*3),sizeof(char));
-    //Reads pattern File
-    fArr=readF(fil);
-    char temp = fArr[0];
-    printf("%s\n",fArr);
+    //Reads Dimensions of Pattern
+    int *dimenP;
+    dimenP = calcDimen(fil);
+    widthP= dimenP[0];
+    heightP= dimenP[1];
+    char* pArr = (char*) calloc((
+        heightP*widthP),sizeof(char));
 
-
+    //Reads the Pattern File!
+    pArr=readF(fil);
     //Declaration of image Variables
     FILE *tempF;
     DIR *imagesD;
@@ -76,7 +94,6 @@ int main(int argc, char const *argv[])
     imagesD = opendir(argv[2]);
     char newdir[100];
     strcpy(newdir,imageP);
-    char* imgArr = (char*) calloc(250,sizeof(char));
 
     while( (entry=readdir(imagesD))){
         if (entry->d_name[0] == '.'){
@@ -87,19 +104,21 @@ int main(int argc, char const *argv[])
         //Then resets newdir to imagepath
         strcat(newdir,entry->d_name);
         tempF = openF(newdir);
+        int *dimenI;
+        dimenI = calcDimen(tempF);
+        char* imgArr = (char*) calloc((
+            dimenI[0]*dimenI[1]),sizeof(char));
         imgArr= readF(tempF);
         //HERE WE EXECUTE pattern vs image checks
-
-
         strcpy(newdir,imageP);
+        process(pArr,imgArr,dimenP,dimenI);
+        free(imgArr);
     }
-
-
     //Cleanup
     fclose(tempF);
     closedir(imagesD);
     fclose(fil);
-    free(fArr);
+    free(pArr);
     free(val);
     return 0;
 }
