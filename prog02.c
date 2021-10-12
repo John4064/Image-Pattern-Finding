@@ -23,23 +23,26 @@ FILE *openF(char* arr){
     }
 }
 char *readF(FILE *fptr){
-    char* arr = (char*) calloc(100, sizeof(char));
+    //@Param is a ptr to a file
+    //Just parses through a file charachters
+    //Return: a char array of pattern/image
+    char* rArr = (char*) calloc(100, sizeof(char));
     char c;
     printf("%c",c);
     int count=0;
-    //first line is special
+    //first line is already removed! calcdimen must come first
     while(1){
         c=fgetc(fptr);
         if(c==EOF){
             break;
         }else{
             if(c != '\n' && c!= ' '){
-                arr[count]= c;
+                rArr[count]= c;
                 count++;
             }
         }
     }
-    return arr;
+    return rArr;
 }
 int *calcDimen(FILE *fil){
     // calculates dimension of file
@@ -56,9 +59,40 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
     //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
     // Meat
     //Return: void
-    for(int i = 0; i <strlen(img);i++){
-        printf("a");
+    //0 is width 1 is height
+    int patS = dimenP[0]*dimenP[1];
+    int imageS = dimenI[0]*dimenI[1];
+    int tempX=0;
+    int tempY=0;
+    //printf("%s\n",img);
+    //char* tempStr = (char*) calloc(100, sizeof(char));
+    //Math on this is so fucked
+    int a=0;
+    //We can get the top third corner
+    //now need to increment every single 3
+    for(int i = 0; i<3+a;i++){
+        for(int k = 0; k<3;k++){
+            printf("%c",img[tempX+k]);
+        }
+        printf("\n");
+        tempX+=dimenI[0];
     }
+    printf("The End\n");
+    
+    /*
+    if(a!=0){
+            if(i==a+3 && a <=dimenI[1]){
+            a+=3;
+            }
+        }else{
+            if(i==a+2 && a <=dimenI[1]){
+            a+=3;
+            }
+        }
+    */
+
+    //printf("%d and %d\n",dimenP[0],dimenP[1]);
+    //free(tempStr);
     return;
 }
 int main(int argc, char const *argv[])
@@ -97,7 +131,6 @@ int main(int argc, char const *argv[])
     imagesD = opendir(argv[2]);
     char newdir[100];
     strcpy(newdir,imageP);
-
     while( (entry=readdir(imagesD))){
         if (entry->d_name[0] == '.'){
             //This just skips the parents and child directories!
@@ -107,20 +140,23 @@ int main(int argc, char const *argv[])
         //Then resets newdir to imagepath
         strcat(newdir,entry->d_name);
         tempF = openF(newdir);
-        int *dimenI;
+        int* dimenI = (int*) calloc(3,sizeof(int));
         dimenI = calcDimen(tempF);
-        char* imgArr = (char*) calloc((
-            dimenI[0]*dimenI[1]),sizeof(char));
-        imgArr= readF(tempF);
+        char* imgArr = (char*) calloc((dimenI[0]*dimenI[1]),sizeof(char));
+        //readF cause dimenI to have wonky values on 20-15
+        //Keep lookout for next line issues if bug occurs
+        imgArr= readF(tempF);        
         //HERE WE EXECUTE pattern vs image checks
         strcpy(newdir,imageP);
         process(pArr,imgArr,dimenP,dimenI);
         free(imgArr);
+        free(dimenI);
     }
     //Cleanup
     fclose(tempF);
     closedir(imagesD);
     fclose(fil);
+    free(dimenP);
     free(pArr);
     free(val);
     return 0;
