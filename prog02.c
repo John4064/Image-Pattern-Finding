@@ -53,6 +53,9 @@ int *calcDimen(FILE *fil){
     return num;
 }
 void process(char* pat,char* img, int* dimenP, int* dimenI){
+    //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
+    // Meat
+    //Return: void
     for(int i = 0; i <strlen(img);i++){
         printf("a");
     }
