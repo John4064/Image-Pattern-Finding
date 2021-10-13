@@ -6,7 +6,7 @@
 //John Parkhurst
 //10/7/21
 //Set to positive integer to print and flush counters(WIP)
-#define DEBUG_OUTPUT	0
+#define DEBUG_OUTPUT 0
 //Structures
 
 
@@ -94,35 +94,40 @@ char *findBloc(char* img,int* dimenI,int xInd,int yInd){
 }
 void process(char* pat,char* img, int* dimenP, int* dimenI){
     //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
-    // Meat
+    // This iterates through all possible x and y values
+    //Then sends it to grab the block in findblock
+    //after checking output is
     //Return: void
     //0 is width 1 is height
     int patS = dimenP[0]*dimenP[1];
     int imageS = dimenI[0]*dimenI[1];
-    //printf("%s\n",img);
-
+    int a = 5;
     for(int tempY = 0; tempY<=dimenI[1]-3;tempY++){
         for(int tempX = 0; tempX<=dimenI[0]-3;tempX++){
-            if(dimenI[0]==12){
-                //char *blockArr = (char*)calloc(strlen(pat)+1,sizeof(char));
-                //Major Bug with calloc/malloc here. See Report
-                char *blockArr;
-                blockArr=findBloc(img,dimenI,tempX,tempY);
-                //Check The values exist and are proper size
-                if(pat != NULL && blockArr != NULL && strlen(pat)==strlen(blockArr)){
-                    //Logically this loop is trash Fix it
-                    for(int cI = 0; cI<strlen(pat);cI++){
-                        
-                        printf("%c and %c\n",pat[cI],blockArr[cI]);
+            //char *blockArr = (char*)calloc(strlen(pat)+1,sizeof(char));
+            //Major Bug with calloc/malloc here. See Report
+            char *blockArr;
+            blockArr=findBloc(img,dimenI,tempX,tempY);
+            //Check The values exist and are proper size
+            if(pat != NULL && blockArr != NULL && strlen(pat)==strlen(blockArr)){
+                //Logically this loop is trash Fix it
+                for(int cI = 0; cI<strlen(pat);cI++){
+                    if(pat[cI]!= blockArr[cI]){
+                        break;
                     }
-                    //If we survived checking all charachters
-                    //printf("The matching ones are %s and %s\n",pat,blockArr);
-                }else{
-                    printf("Error In Size of pattern/Image");
-                    exit(324);
+                    if(cI == 8){
+                        //WE PASS IF WE GO HERE
+                        printf("%d and %d\n",tempY,tempX);
+                        
+                    }
                 }
-                //free(blockArr);
+                //If we survived checking all charachters
+                //printf("The matching ones are %s and %s\n",pat,blockArr);
+            }else{
+                printf("Error In Size of pattern/Image");
+                exit(324);
             }
+            //free(blockArr);
         }
     }
     printf("The End of the Image\n");
