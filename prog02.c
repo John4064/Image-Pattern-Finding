@@ -8,14 +8,6 @@
 //Set to positive integer to print and flush counters(WIP)
 #define DEBUG_OUTPUT	0
 //Structures
-typedef struct block
-{
-    //This structure are all the pattern size blocks 
-    //That we check
-	char* blocArr;
-	int x;
-    int y;
-} block;
 
 
 FILE *openF(char* arr){
@@ -70,21 +62,33 @@ char *findBloc(char* img,int* dimenI,int xInd,int yInd){
     /*@Param: pointer to char array of img, pointer to int array, the xindex of block(add y index)
       @return: char array of "block"
     */
+    //char* ansArr =(char*)calloc((9+1),sizeof(char));
+    //char ex[]="";
     char* ansArr;
     char tempA[10];
     int yPos=yInd*dimenI[0];
     int count =0;
     int size =3;
+    //This calc112-86
     //ypos is the 1,2,3 of the specific 3 block
     //xInd is the left most x index never xInd>width-3
     for(int i = 0; i<size;i++){
         for(int k = xInd; k<xInd+size;k++){
             //Assigns the variables in rows of size(patternsize)
+            //printf("%c\n",img[yPos+k]);
+            if(yPos+k>=strlen(img)){
+                printf("FAILURE\n");
+                //Exit Program with Error out of bounds of img
+            }
             tempA[count] = img[yPos+k];
+            //ypos+k is going longer the the img when I use calloc
+            //and only when I calloc ansArr and blockArr
+            //NO CLUE WHY math = ok otherwise
             count+=1;
         }
         yPos+=dimenI[0];
     }
+    //printf("%s\n",tempA);
     strcpy(ansArr,tempA);
     return ansArr;
 }
@@ -95,16 +99,29 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
     //0 is width 1 is height
     int patS = dimenP[0]*dimenP[1];
     int imageS = dimenI[0]*dimenI[1];
-    char *blockArr;
-    //int tempY=0;
     //printf("%s\n",img);
+
     for(int tempY = 0; tempY<=dimenI[1]-3;tempY++){
         for(int tempX = 0; tempX<=dimenI[0]-3;tempX++){
             if(dimenI[0]==12){
+                //char *blockArr = (char*)calloc(strlen(pat)+1,sizeof(char));
+                //Major Bug with calloc/malloc here. See Report
+                char *blockArr;
                 blockArr=findBloc(img,dimenI,tempX,tempY);
-                //Compare blockArr and pat
-                
-                printf("%d",strcmp("abc","bcd"));
+                //Check The values exist and are proper size
+                if(pat != NULL && blockArr != NULL && strlen(pat)==strlen(blockArr)){
+                    //Logically this loop is trash Fix it
+                    for(int cI = 0; cI<strlen(pat);cI++){
+                        
+                        printf("%c and %c\n",pat[cI],blockArr[cI]);
+                    }
+                    //If we survived checking all charachters
+                    //printf("The matching ones are %s and %s\n",pat,blockArr);
+                }else{
+                    printf("Error In Size of pattern/Image");
+                    exit(324);
+                }
+                //free(blockArr);
             }
         }
     }
@@ -130,6 +147,8 @@ int main(int argc, char const *argv[])
     //Opening pattern Files, Reading File, Putting into array
     FILE *fil;
     fil=openF(val);
+    free(val);
+
     //Reads Dimensions of Pattern
     int *dimenP;
     dimenP = calcDimen(fil);
@@ -158,9 +177,10 @@ int main(int argc, char const *argv[])
         tempF = openF(newdir);
         int* dimenI = (int*) calloc(3,sizeof(int));
         dimenI = calcDimen(tempF);
-        char* imgArr = (char*) calloc((dimenI[0]*dimenI[1]),sizeof(char));
+        char* imgArr = (char*) calloc((dimenI[0]*dimenI[1])+1,sizeof(char));
         //readF cause dimenI to have wonky values on 20-15
         //Keep lookout for next line issues if bug occurs
+        //printf("\nTHIS IS THE SIZE: %d\n",dimenI[0]*dimenI[1]);
         imgArr= readF(tempF);        
         //HERE WE EXECUTE pattern vs image checks
         strcpy(newdir,imageP);
@@ -175,6 +195,5 @@ int main(int argc, char const *argv[])
     fclose(fil);
     free(dimenP);
     free(pArr);
-    free(val);
     return 0;
 }
