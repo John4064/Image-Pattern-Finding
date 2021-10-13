@@ -70,24 +70,22 @@ char *findBloc(char* img,int* dimenI,int xInd,int yInd){
     /*@Param: pointer to char array of img, pointer to int array, the xindex of block(add y index)
       @return: char array of "block"
     */
-   
     char* ansArr;
     char tempA[10];
     int yPos=yInd*dimenI[0];
     int count =0;
+    int size =3;
     //ypos is the 1,2,3 of the specific 3 block
     //xInd is the left most x index never xInd>width-3
-    for(int i = 0; i<3;i++){
-        for(int k = xInd; k<xInd+3;k++){
-            //printf("%c",img[yPos+k]);
+    for(int i = 0; i<size;i++){
+        for(int k = xInd; k<xInd+size;k++){
+            //Assigns the variables in rows of size(patternsize)
             tempA[count] = img[yPos+k];
             count+=1;
         }
         yPos+=dimenI[0];
     }
     strcpy(ansArr,tempA);
-    printf("%s\n",ansArr);
-    //printf("The End of this block\n");
     return ansArr;
 }
 void process(char* pat,char* img, int* dimenP, int* dimenI){
@@ -104,11 +102,12 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
         for(int tempX = 0; tempX<=dimenI[0]-3;tempX++){
             if(dimenI[0]==12){
                 blockArr=findBloc(img,dimenI,tempX,tempY);
-                //printf("\n");
+                //Compare blockArr and pat
+                
+                printf("%d",strcmp("abc","bcd"));
             }
         }
     }
-    //printf("%d and %d\n",dimenP[0],dimenP[1]);
     printf("The End of the Image\n");
     return;
 }
