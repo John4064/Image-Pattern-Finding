@@ -5,6 +5,18 @@
 //strcmp is main comparison tool
 //John Parkhurst
 //10/7/21
+//Set to positive integer to print and flush counters(WIP)
+#define DEBUG_OUTPUT	0
+//Structures
+typedef struct block
+{
+    //This structure are all the pattern size blocks 
+    //That we check
+	char* blocArr;
+	int x;
+    int y;
+} block;
+
 
 FILE *openF(char* arr){
     //@param: pointer to char array
@@ -54,23 +66,29 @@ int *calcDimen(FILE *fil){
     sscanf(list,"%d%c%d",&num[0],&trash,&num[1]);
     return num;
 }
-void findBloc(char* img,int* dimenI,int xInd){
+char *findBloc(char* img,int* dimenI,int xInd,int yInd){
     /*@Param: pointer to char array of img, pointer to int array, the xindex of block(add y index)
       @return: char array of "block"
     */
-    int yPos=0;
+   
+    char* ansArr;
+    char tempA[10];
+    int yPos=yInd*dimenI[0];
+    int count =0;
     //ypos is the 1,2,3 of the specific 3 block
     //xInd is the left most x index never xInd>width-3
     for(int i = 0; i<3;i++){
-        for(int k = num; k<num+3;k++){
-            printf("%c",img[yPos+k]);
+        for(int k = xInd; k<xInd+3;k++){
+            //printf("%c",img[yPos+k]);
+            tempA[count] = img[yPos+k];
+            count+=1;
         }
-        printf("\n");
         yPos+=dimenI[0];
     }
-    printf("The End of this block\n");
-    
-    return;
+    strcpy(ansArr,tempA);
+    printf("%s\n",ansArr);
+    //printf("The End of this block\n");
+    return ansArr;
 }
 void process(char* pat,char* img, int* dimenP, int* dimenI){
     //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
@@ -79,13 +97,19 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
     //0 is width 1 is height
     int patS = dimenP[0]*dimenP[1];
     int imageS = dimenI[0]*dimenI[1];
-    int tempX=2;
-    int tempY=0;
+    char *blockArr;
+    //int tempY=0;
     //printf("%s\n",img);
-    //char* tempStr = (char*) calloc(100, sizeof(char));
-    findBloc(img,dimenI,tempX);
+    for(int tempY = 0; tempY<=dimenI[1]-3;tempY++){
+        for(int tempX = 0; tempX<=dimenI[0]-3;tempX++){
+            if(dimenI[0]==12){
+                blockArr=findBloc(img,dimenI,tempX,tempY);
+                //printf("\n");
+            }
+        }
+    }
     //printf("%d and %d\n",dimenP[0],dimenP[1]);
-    //free(tempStr);
+    printf("The End of the Image\n");
     return;
 }
 int main(int argc, char const *argv[])
