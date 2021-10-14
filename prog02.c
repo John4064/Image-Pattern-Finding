@@ -8,8 +8,9 @@
 //Set to positive integer to print and flush counters(WIP)
 #define DEBUG_OUTPUT 0
 //Structures
-
-
+//Output path global
+char* outputP;
+char* patternP;
 FILE *openF(char* arr){
     //@param: pointer to char array
     //Opens the file
@@ -65,6 +66,7 @@ char *findBloc(char* img,int* dimenI,int xInd,int yInd){
     //char* ansArr =(char*)calloc((9+1),sizeof(char));
     //char ex[]="";
     char* ansArr;
+    ansArr = (char*) calloc(10,sizeof(char));
     char tempA[10];
     int yPos=yInd*dimenI[0];
     int count =0;
@@ -77,8 +79,9 @@ char *findBloc(char* img,int* dimenI,int xInd,int yInd){
             //Assigns the variables in rows of size(patternsize)
             //printf("%c\n",img[yPos+k]);
             if(yPos+k>=strlen(img)){
-                printf("FAILURE\n");
-                //Exit Program with Error out of bounds of img
+                //The outter bounds exceds
+                //printf("FAILURE: %d\n",xInd+size);
+                return "";
             }
             tempA[count] = img[yPos+k];
             //ypos+k is going longer the the img when I use calloc
@@ -88,9 +91,17 @@ char *findBloc(char* img,int* dimenI,int xInd,int yInd){
         }
         yPos+=dimenI[0];
     }
-    //printf("%s\n",tempA);
     strcpy(ansArr,tempA);
     return ansArr;
+}
+void printFil(char *line){
+    DIR *outputD;
+    outputD = opendir(outputP);
+
+
+    closedir(outputD);
+    printf("%s\n",line);
+    return;
 }
 void process(char* pat,char* img, int* dimenP, int* dimenI){
     //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
@@ -101,7 +112,13 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
     //0 is width 1 is height
     int patS = dimenP[0]*dimenP[1];
     int imageS = dimenI[0]*dimenI[1];
-    int a = 5;
+    int count =0;
+    char *str;
+    str="";
+    char* outputArr;
+    outputArr = (char*) calloc(10,sizeof(char));
+
+
     for(int tempY = 0; tempY<=dimenI[1]-3;tempY++){
         for(int tempX = 0; tempX<=dimenI[0]-3;tempX++){
             //char *blockArr = (char*)calloc(strlen(pat)+1,sizeof(char));
@@ -118,19 +135,29 @@ void process(char* pat,char* img, int* dimenP, int* dimenI){
                     if(cI == 8){
                         //WE PASS IF WE GO HERE
                         printf("%d and %d\n",tempY,tempX);
-                        
+                        count++;
+                        printf("%d\n",count);
+                        asprintf(&str, "%d", tempY);
                     }
                 }
                 //If we survived checking all charachters
                 //printf("The matching ones are %s and %s\n",pat,blockArr);
             }else{
-                printf("Error In Size of pattern/Image");
-                exit(324);
+                //printf("%lu != %lu\n",strlen(pat),strlen(blockArr));
+                //printf("Error In Size of pattern/Image\n");
+                return;
+                //exit(324);
             }
-            //free(blockArr);
+            free(blockArr);
         }
     }
-    printf("The End of the Image\n");
+    if(strcmp(str,"")==0){
+        //do nothing
+        printf("Empty\n");
+    }else{
+        printFil(str);
+    }
+    free(outputArr);
     return;
 }
 int main(int argc, char const *argv[])
@@ -138,9 +165,16 @@ int main(int argc, char const *argv[])
     //Pattern Dimensions
     int widthP=0;
     int heightP=0;
-    //image path
+    //image path and Pattern name
     const char *imageP = argv[2];
-
+    outputP = (char*)argv[3];
+    int subInd=16;
+    char string[50];
+    while(subInd<strlen(argv[1])){
+        string[subInd-16]=argv[1][subInd];
+        subInd++;
+    }
+    patternP=string;
     char* val = (char*) calloc(100, sizeof(char));
     //Importing image path from script
     //Argv1 is the pattern
@@ -180,7 +214,8 @@ int main(int argc, char const *argv[])
         //Then resets newdir to imagepath
         strcat(newdir,entry->d_name);
         tempF = openF(newdir);
-        int* dimenI = (int*) calloc(3,sizeof(int));
+        //int* dimenI = (int*) calloc(3,sizeof(int));
+        int* dimenI;
         dimenI = calcDimen(tempF);
         char* imgArr = (char*) calloc((dimenI[0]*dimenI[1])+1,sizeof(char));
         //readF cause dimenI to have wonky values on 20-15

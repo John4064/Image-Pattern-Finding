@@ -68,3 +68,5 @@ if test -x ans
         done
         echo "Complete"
     fi
+
+    # ./Data/Patterns/pattern1.pat ./Data/Images ./Output/
