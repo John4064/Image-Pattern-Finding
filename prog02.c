@@ -56,6 +56,8 @@ int *calcDimen(FILE *fil){
 }
 char *findBloc(char* img,int width,int height,int xInd,int yInd){
     //@Param: pointer to char array of img, pointer to int array, the xindex of block(add y index)
+    //xInd and yind reference the top left index of the "block"
+    //this function gets the 3x3 
     //@return: char array of "block"
     char* ansArr = calloc(10, sizeof(char));;
     char tempA[10];
@@ -82,43 +84,56 @@ char *findBloc(char* img,int width,int height,int xInd,int yInd){
         }
         yPos+=width;
     }
-    fflush(stdout);
+    //Copies the local array to our char array
     strcpy(ansArr,tempA);
     return ansArr;
 }
-void process(char* pat,char* img,int width,int height){
-    //@param: pattern charachter array, image character array, integer array of pattern height/width, integer array of image height/width
-    // Meat
+int *process(char* pat,char* img,int width,int height){
+    //@param: pattern charachter array, image character array, width and height of image
     //Return: void
-    //Width of Image, Height of Image
-    int imageS = width*height;
-    
-    //int tempY=0;
-    //printf("%s\n",img);
+    //Iterates through the image getting all
+    //top left indexs of any possible 3x3 will never get too close 
+    //boundaries
+    int* cord = (int*) calloc(width*height, sizeof(int));
+    int count = 0;
     for(int tempY = 0; tempY<=height-3;tempY++){
         for(int tempX = 0; tempX<=width-3;tempX++){
+            //delete next line
             if(width!=20){
                 char *blockArr;
                 blockArr=findBloc(img,width,height,tempX,tempY);
                 //Compare blockArr and pat
-                printf("%d\n",strcmp(pat,blockArr));
-                free(blockArr);
+                int ans = strcmp(pat,blockArr);
+                if(ans ==0){
+                    //printf("%s\n%s\nThese match\n",blockArr,pat);
+                    //printf("%d and %d\n",tempX,tempY);
+                    cord[count]=tempY;
+                    cord[count+1]=tempX;
+                    printf("%d\n",cord[count]);
+                    printf("%d\n",cord[count+1]);
 
+                    count+=2;
+                }
+                free(blockArr);
             }
         }
     }
-    printf("The End of the Image\n");
-    return;
+    //Checking if we found any results
+    if(count>0){
+        return cord;
+    }else{
+//        printf("No Matches\n");
+        return NULL;
+    }
+    return cord;
 }
 int main(int argc, char const *argv[])
 {
     //Pattern Dimensions
     int widthP,heightP,widthI,heightI=0;
-    //image path
-
+    
     char* pVal = (char*) calloc(100, sizeof(char));
     char* iVal = (char*) calloc(100, sizeof(char));
-
     //Importing image path from script
     //Argv1 is the pattern file
     //argv2 is the image file
@@ -153,9 +168,31 @@ int main(int argc, char const *argv[])
         pArr=readF(pFil,(heightP*widthP));
         iArr=readF(iFil,(500));
         //Process The Two Files
-        process(pArr,iArr,widthI,heightI);
+        int *ans;
+        //Answers are here
+        ans=process(pArr,iArr,widthI,heightI);
 
-
+        if(ans != NULL){
+            //for(int j = 0;j<(sizeof(ans)/sizeof(ans[0]));j++){
+              //  printf("%d ",ans[j]);
+            //}
+            //If it exists
+            //output
+            //image Name
+            char imageName[50];
+            int subInd=14;
+            while(subInd<strlen(argv[2])){
+                imageName[subInd-14]=argv[2][subInd];
+                subInd++;
+            }
+            printf("%s\n",imageName);
+            int counter=0;
+            while (ans[counter]!= NULL){
+                //printf("%d ",ans[counter]);
+                counter++;
+            }
+            free(ans);
+        }
 
         fclose(pFil);
         fclose(iFil);

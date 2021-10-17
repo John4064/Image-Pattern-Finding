@@ -3,7 +3,7 @@
 #bash start.sh prog02.c ./Data/Images/ ./Data/Patterns/ 
 if test -e $1
 then
-    gcc $1 -o ans
+    gcc $1 -o prog02
     echo "COMPILED SUCCESSFULLY"
 fi
 #ERROR HANDLING CHECKING VALID DIRECTORY
@@ -57,7 +57,7 @@ for x in ${PAT}*.pat
 
 rm -r ${PAT}copy
 #$2 Directory for Images $3 Directory of pattern files $4 output
-if test -x ans
+if test -x prog02
     then
         #./ans $2 $3 ./Output/
         #This executes the c script for every modified 
@@ -67,7 +67,7 @@ if test -x ans
         do
             for i in ${IMG}*.img
             do
-                ./ans $p $i
+                ./prog02 $p $i
             done
         done
         echo "Complete"
