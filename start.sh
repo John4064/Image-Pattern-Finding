@@ -9,15 +9,16 @@ fi
 #ERROR HANDLING CHECKING VALID DIRECTORY
 if test ! -d $3
 then
-    echo "Error In Image Directory"
+    echo "Error In Pattern Directory"
     exit 2
 elif test ! -d $2
 then
-    echo "Error in Pattern Directory"
+    echo "Error in Images Directory"
     exit 3
 fi
 #Pattern Directory
 PAT=$3
+IMG=$2
 #Pattern Images importing
 #Iterates through Files of .pat
 count=0
@@ -64,9 +65,10 @@ if test -x ans
         #MAKE THIS RUN CONCURRENTLY
         for p in ${PAT}*.pat
         do
-            ./ans $p $2 ./Output/
+            for i in ${IMG}*.img
+            do
+                ./ans $p $i
+            done
         done
         echo "Complete"
     fi
-
-    # ./Data/Patterns/pattern1.pat ./Data/Images ./Output/
