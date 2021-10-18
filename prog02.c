@@ -104,7 +104,6 @@ int *process(char* pat,char* img,int width,int height){
             //Compare blockArr and pat
             int ans = strcmp(pat,blockArr);
             //Compares the strings and a match
-            //
             if(ans ==0){
                 cord[count]=tempY;
                 cord[count+1]=tempX;
@@ -169,14 +168,13 @@ int main(int argc, char const *argv[])
         int *ans;
         //Answers are here
         ans=process(pArr,iArr,widthI,heightI);
-
+        //Checking the Array Contains Elements
         if(ans[0]!= -1){
             //for(int j = 0;j<(sizeof(ans)/sizeof(ans[0]));j++){
               //  printf("%d ",ans[j]);
             //}
             //If it exists
-            //output
-            //image Name
+            //Name of Image
             char imageName[50];
             int subInd=14;
             while(subInd<strlen(argv[2])){
