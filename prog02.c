@@ -99,31 +99,29 @@ int *process(char* pat,char* img,int width,int height){
     for(int tempY = 0; tempY<=height-3;tempY++){
         for(int tempX = 0; tempX<=width-3;tempX++){
             //delete next line
-            if(width!=20){
-                char *blockArr;
-                blockArr=findBloc(img,width,height,tempX,tempY);
-                //Compare blockArr and pat
-                int ans = strcmp(pat,blockArr);
-                if(ans ==0){
-                    //printf("%s\n%s\nThese match\n",blockArr,pat);
-                    //printf("%d and %d\n",tempX,tempY);
-                    cord[count]=tempY;
-                    cord[count+1]=tempX;
-                    printf("%d\n",cord[count]);
-                    printf("%d\n",cord[count+1]);
-
-                    count+=2;
-                }
-                free(blockArr);
+            char *blockArr;
+            blockArr=findBloc(img,width,height,tempX,tempY);
+            //Compare blockArr and pat
+            int ans = strcmp(pat,blockArr);
+            //Compares the strings and a match
+            //
+            if(ans ==0){
+                cord[count]=tempY;
+                cord[count+1]=tempX;
+                count+=2;
             }
+            free(blockArr);
         }
     }
     //Checking if we found any results
     if(count>0){
+        //This just creates an end charachter
+        cord[count]=-1;
         return cord;
     }else{
 //        printf("No Matches\n");
-        return NULL;
+        cord[0]= -1;
+        return cord;
     }
     return cord;
 }
@@ -172,7 +170,7 @@ int main(int argc, char const *argv[])
         //Answers are here
         ans=process(pArr,iArr,widthI,heightI);
 
-        if(ans != NULL){
+        if(ans[0]!= -1){
             //for(int j = 0;j<(sizeof(ans)/sizeof(ans[0]));j++){
               //  printf("%d ",ans[j]);
             //}
@@ -187,10 +185,11 @@ int main(int argc, char const *argv[])
             }
             printf("%s\n",imageName);
             int counter=0;
-            while (ans[counter]!= NULL){
-                //printf("%d ",ans[counter]);
+            while (ans[counter]!= -1){
+                printf("%d ",ans[counter]);
                 counter++;
             }
+            printf("\n");
             free(ans);
         }
 
