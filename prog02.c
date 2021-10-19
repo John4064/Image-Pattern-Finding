@@ -205,34 +205,3 @@ int main(int argc, char const *argv[])
     //End
     return 0;
     }
-    /*
-            //Combines imagepath and file name then opens file
-            //Then resets newdir to imagepath
-            strcat(newdir,entry->d_name);
-            FILE *tempF;
-            if(tempF){
-                tempF = openF(newdir);
-                //int* dimenI = (int*) calloc(3,sizeof(int));
-                //int* dimenI;
-                //dimenI = calcDimen(tempF);
-                //free(dimenI);
-                //char* imgArr = (char*) calloc((dimenI[0]*dimenI[1]),sizeof(char));
-                char* imgArr;
-                //readF cause dimenI to have wonky values on 20-15
-                //Keep lookout for next line issues if bug occurs
-                imgArr= readF(tempF,100);
-                if(imgArr){
-                    //process(pArr,imgArr,dimenI);
-                    printf("KACHIGGA\n");
-                    free(imgArr);
-                }  
-                //HERE WE EXECUTE pattern vs image checks
-                strcpy(newdir,imageP);
-                fclose(tempF);
-            }
-            //Create struct of image pass that
-            
-            //dimenI        
-
-        }
-        */
