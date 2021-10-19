@@ -1,23 +1,25 @@
 #John Parkhurst
 #Script Execution 
-#bash start.sh prog02.c ./Data/Images/ ./Data/Patterns/ 
+#bash start.sh prog02.c ./Data/Images/ ./Data/Patterns/
+
 if test -e $1
 then
-    gcc $1 -o ans
-    echo "COMPILED SUCCESSFULLY"
+    gcc $1 -o prog02
+
 fi
 #ERROR HANDLING CHECKING VALID DIRECTORY
 if test ! -d $3
 then
-    echo "Error In Image Directory"
+    echo "Error In Pattern Directory"
     exit 2
 elif test ! -d $2
 then
-    echo "Error in Pattern Directory"
+    echo "Error in Images Directory"
     exit 3
 fi
 #Pattern Directory
 PAT=$3
+IMG=$2
 #Pattern Images importing
 #Iterates through Files of .pat
 count=0
@@ -56,15 +58,16 @@ for x in ${PAT}*.pat
 
 rm -r ${PAT}copy
 #$2 Directory for Images $3 Directory of pattern files $4 output
-if test -x ans
+if test -x prog02
     then
-        #./ans $2 $3 ./Output/
         #This executes the c script for every modified 
         #Pattern File
         #MAKE THIS RUN CONCURRENTLY
         for p in ${PAT}*.pat
         do
-            ./ans $p $2 ./Output/
+            for i in ${IMG}*.img
+            do
+                ./prog02 $p $i
+            done
         done
-        echo "Complete"
     fi
