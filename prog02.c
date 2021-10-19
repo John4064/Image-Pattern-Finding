@@ -188,9 +188,8 @@ int main(int argc, char const *argv[])
                 counter++;
             }
             printf("\n");
-            free(ans);
         }
-
+        free(ans);
         fclose(pFil);
         fclose(iFil);
         //Cleanup
